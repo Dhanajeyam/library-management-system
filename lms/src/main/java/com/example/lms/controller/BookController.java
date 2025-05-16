@@ -2,6 +2,7 @@ package com.example.lms.controller;
 
 // BookController.java
 
+import com.example.lms.exception.ResourceNotFoundException;
 import com.example.lms.model.Book;
 import com.example.lms.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,11 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable int id) {
-        return ResponseEntity.ok(bookRepository.findById(id));
+        Book book = bookRepository.findById(id);
+        if (book == null) {
+            throw new ResourceNotFoundException("Book not found with ID: " + id);
+        }
+        return ResponseEntity.ok(book);
     }
 
     @PostMapping
